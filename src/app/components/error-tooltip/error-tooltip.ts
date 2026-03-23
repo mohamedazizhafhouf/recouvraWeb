@@ -11,7 +11,6 @@ import { CommonModule } from '@angular/common';
 export class ErrorTooltip {
 @Input({ required: true }) form!: FormGroup;
 @Input({ required: true }) path!: string;
-@Input({ required: true }) label!: string;
 @Input() selectedCountry?: any;
 
 //Universal error handler
@@ -21,9 +20,9 @@ getErrorMessage(): string {
 
   const errors = control.errors;
 
-  if (errors['required']) return `${this.label} is required`;
+  if (errors['required']) return "Required";
 
-  if (errors['minlength']) return `${this.label} must be at least ${errors['minlength'].requiredLength} characters`;
+  if (errors['minlength']) return `At least ${errors['minlength'].requiredLength} characters`;
   
   if (errors['pattern']) {
 
@@ -33,10 +32,10 @@ getErrorMessage(): string {
     }
 
     if(this.path.includes('firstName') || this.path.includes('lastName')){
-      return `${this.label} must contain latin letters only`;
+      return "Latin letters only";
     }
     
-    return `${this.label} format is invalid`;
+    return "format is invalid";
   }
 
   if (errors['email']) return 'Enter a valid email address';

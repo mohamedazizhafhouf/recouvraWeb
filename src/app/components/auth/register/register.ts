@@ -1,7 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ErrorTooltip } from '../../error-tooltip/error-tooltip';
+import { RegistrationRequest } from '../../../core/models/auth.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -11,6 +13,7 @@ import { ErrorTooltip } from '../../error-tooltip/error-tooltip';
 })
 export class Register {
   showPassword = signal(false);
+  private readonly authService = inject(AuthService);
 
   registerForm: FormGroup;
 
@@ -20,7 +23,7 @@ export class Register {
       lastName: ['', [Validators.required, Validators.pattern(/^[A-Za-z'-]+(?: [A-Za-z'-]+){0,2}$/)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      role: ['agent', Validators.required]
+      role: ['agent']
     });
   }
 
@@ -36,8 +39,22 @@ isInvalid(controlName: string) {
   onSubmit() {
     if (this.registerForm.valid) {
       console.log('Form Data:', this.registerForm.value);
-      // API Call
+      // Preparing the registrationRequest
+      const registrationRequest: RegistrationRequest = this.registerForm.value;
+
+      // Calling the service
+      this.authService.register(registrationRequest).subscribe(
+        {
+          next: (response) => {
+            // show success message to the user 
+          },
+          error: (err) => {
+            // show an erro message to the user 
+          }
+        }
+      );
     }
+
     else{
       this.registerForm.markAllAsTouched();
     }
